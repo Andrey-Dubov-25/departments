@@ -6,14 +6,15 @@ from departments import constants
 from departments.models import Department, Employee
 
 
-
 class EmployeeSerializer(serializers.ModelSerializer):
+    """Сериализатор получения информации о сотруднике."""
     class Meta:
         model = Employee
         fields = ('id', 'full_name', 'position', 'hired_at', 'created_at')
 
 
 class DepartmentSerializer(serializers.ModelSerializer):
+    """Сериализатор получения информации о подразделении."""
     employees = serializers.SerializerMethodField()
     children = serializers.SerializerMethodField()
 
@@ -22,6 +23,7 @@ class DepartmentSerializer(serializers.ModelSerializer):
         fields = ('id', 'name', 'employees', 'children', 'created_at')
 
     def get_employees(self, obj):
+        """Получение сотрудников подразделения."""
         include_employees = self.context.get('include_employees', True)
 
         if not include_employees:
@@ -32,6 +34,7 @@ class DepartmentSerializer(serializers.ModelSerializer):
         return serializer.data
 
     def get_children(self, obj):
+        """Получение дочерних подразделений."""
         depth = self.context.get('depth', 1)
         include_employees = self.context.get('include_employees', True)
 
@@ -53,6 +56,7 @@ class DepartmentSerializer(serializers.ModelSerializer):
 
 
 class DepartmentUpdateSerializer(serializers.ModelSerializer):
+    """Сериализатор изменения родительского подразделения."""
     parent = serializers.PrimaryKeyRelatedField(
         queryset=Department.objects.all(),
         allow_null=True,
@@ -64,6 +68,7 @@ class DepartmentUpdateSerializer(serializers.ModelSerializer):
         fields = ('name', 'parent')
 
     def validate_name(self, value):
+        """Валидация поля name при создании."""
 
         if not value or not value.strip():
             raise ValidationError('Название не может быть пустым')
@@ -71,6 +76,7 @@ class DepartmentUpdateSerializer(serializers.ModelSerializer):
         return value.strip()
 
     def validate_parent(self, value):
+        """Валидация поля parent."""
 
         if value is not None and not Department.objects.filter(
             id=value.id
@@ -82,6 +88,7 @@ class DepartmentUpdateSerializer(serializers.ModelSerializer):
         return value
 
     def validate(self, data):
+        """Валидация передачи полей name и parent."""
         name = data.get('name')
         parent = data.get('parent')
 
@@ -135,11 +142,13 @@ class DepartmentUpdateSerializer(serializers.ModelSerializer):
 
 
 class EmployeesCreateSerializer(serializers.ModelSerializer):
+    """Сериализатор создания сотрудника."""
     full_name = serializers.CharField(max_length=constants.FULL_NAME_LEN)
     position = serializers.CharField(max_length=constants.POSITION_LEN)
     hired_at = serializers.DateField(required=False, allow_null=True)
 
     def validate_full_name(self, value):
+        """Валидация поля full_name."""
 
         if not value or not value.strip():
             raise ValidationError('Нельзя оставлять поле full_name пустым.')
@@ -147,6 +156,7 @@ class EmployeesCreateSerializer(serializers.ModelSerializer):
         return value.strip()
 
     def validate_position(self, value):
+        """Валидация поля position."""
 
         if not value or not value.strip():
             raise ValidationError('Нельзя оставлять поле position пустым.')
@@ -159,6 +169,7 @@ class EmployeesCreateSerializer(serializers.ModelSerializer):
 
 
 class DepartmentDeleteSerializer(serializers.Serializer):
+    """Сериалитор удаления подразделения."""
     mode = serializers.ChoiceField(
         choices=['cascade', 'reassign'],
         default='cascade'
@@ -168,6 +179,7 @@ class DepartmentDeleteSerializer(serializers.Serializer):
     )
 
     def validate(self, data):
+        """Валидация передачи параметров mode и reassign_to_department_id."""
         mode = data.get('mode')
         reassign_to_department_id = data.get('reassign_to_department_id')
         current_department_id = self.context.get('department_id')

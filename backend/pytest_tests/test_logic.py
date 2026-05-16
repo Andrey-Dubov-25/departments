@@ -1,9 +1,8 @@
-from django.urls import reverse
 from http import HTTPStatus
+
+from django.urls import reverse
 from pytest_lazy_fixtures import lf
 import pytest
-
-# from quests.models import Quest
 
 
 pytestmark = pytest.mark.django_db
@@ -17,6 +16,7 @@ pytestmark = pytest.mark.django_db
     )
 )
 def test_create_department(client, department_parent, data, status):
+    """Тестирование создания подразделения."""
 
     url = reverse('api:departments-list')
     response = client.post(url, data)
@@ -31,6 +31,7 @@ def test_create_department(client, department_parent, data, status):
     )
 )
 def test_create_employees(client, department_parent, data, status):
+    """Тестирование создания сотрудника."""
 
     url = reverse('api:departments-employees', args=(department_parent.pk,))
     response = client.post(url, data)

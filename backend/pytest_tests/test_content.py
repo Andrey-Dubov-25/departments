@@ -1,13 +1,11 @@
-from django.urls import reverse
-# from pytest_lazy_fixtures import lf
 import pytest
 
+from django.urls import reverse
 
-pytestmark = pytest.mark.django_db
 
-
+@pytest.mark.django_db
 def test_department_in_list(client, department_parent):
-    """Тестирование наличие квеста в запросе к странице квестов."""
+    """Тестирование наличия данных подразделения в запросе к подразделению."""
     url = reverse('api:departments-list')
     response = client.get(url)
     quest_data = response.data[0]
