@@ -152,7 +152,7 @@ POST /api/quest-types/
 
 
 ## Ссылка на проект
-[Проект GQB](https://github.com/Andrey-Dubov-25/departments)
+[Проект Departments](https://github.com/Andrey-Dubov-25/departments)
 
 ### Как запустить проект:
 
