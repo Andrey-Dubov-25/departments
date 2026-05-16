@@ -1,8 +1,10 @@
 from django.db import models
+
 from . import constants
 
 
 class Department(models.Model):
+    """Модель подразделения."""
     name = models.CharField(
         max_length=constants.NAME_LEN,
         verbose_name='Название',
@@ -32,6 +34,7 @@ class Department(models.Model):
 
 
 class Employee(models.Model):
+    """Модель сотрудника."""
     full_name = models.CharField(
         max_length=constants.FULL_NAME_LEN,
         verbose_name='Имя',

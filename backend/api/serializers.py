@@ -2,8 +2,9 @@ from django.shortcuts import get_object_or_404
 from rest_framework import serializers
 from rest_framework.serializers import ValidationError
 
-from departments.models import Department, Employee
 from departments import constants
+from departments.models import Department, Employee
+
 
 
 class EmployeeSerializer(serializers.ModelSerializer):
